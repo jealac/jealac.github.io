@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SetList</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --card: #ffffff; --text: #1d1d1f; --muted: #6b6b70;
+    --border: #dddcd7; --accent: #b4442c; --accent-text: #fff; --drop: #f3d9d2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17171a; --card: #222226; --text: #ececee; --muted: #9a9aa2;
+      --border: #34343a; --accent: #e0694f; --accent-text: #111; --drop: #4a2a23;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between; }
+  h1 { margin: 0; font-size: 1.6rem; }
+  .meta { color: var(--muted); font-size: .9rem; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+  button {
+    font: inherit; font-size: .9rem; padding: 7px 12px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--card); color: var(--text); cursor: pointer;
+  }
+  button:hover { border-color: var(--muted); }
+  button.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  button.dirty::after { content: " •"; }
+  form.add {
+    display: grid; grid-template-columns: 2fr 1fr auto; gap: 8px; margin: 20px 0 16px;
+  }
+  @media (max-width: 560px) { form.add { grid-template-columns: 1fr; } }
+  input {
+    font: inherit; padding: 8px 10px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--card); color: var(--text); width: 100%;
+  }
+  ol { list-style: none; margin: 0; padding: 0; }
+  li {
+    display: grid; grid-template-columns: 28px 36px 1fr auto auto; align-items: center; gap: 8px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 10px; margin-bottom: 6px; user-select: none;
+  }
+  li.dragging { opacity: .4; }
+  li.over-top { box-shadow: 0 -3px 0 var(--accent); }
+  li.over-bottom { box-shadow: 0 3px 0 var(--accent); }
+  .handle { cursor: grab; color: var(--muted); text-align: center; font-size: 1.1rem; }
+  .num { color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+  .title { font-weight: 600; overflow-wrap: anywhere; }
+  .instr { color: var(--muted); font-size: .9rem; white-space: nowrap; }
+  [contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 4px; padding: 0 3px; }
+  .del { border: none; background: none; color: var(--muted); font-size: 1.1rem; padding: 2px 6px; }
+  .del:hover { color: var(--accent); }
+  .empty { color: var(--muted); text-align: center; padding: 40px 0; }
+  .hint { color: var(--muted); font-size: .85rem; margin-top: 16px; }
+  .event {
+    font-size: 1.3rem; font-weight: 600; margin-top: 16px;
+    border: 1px dashed var(--border); background: transparent;
+  }
+
+  /* ---------- Impression ---------- */
+  .print-title { display: none; }
+  @media print {
+    @page { margin: 1.5cm; }
+    :root { --bg: #fff; --card: #fff; --text: #000; --muted: #444; --border: #bbb; }
+    body { font-size: 14pt; }
+    main { max-width: none; padding: 0; }
+    header, form.add, .hint, .event, .handle, .del { display: none !important; }
+    .print-title {
+      display: block; text-align: center; font-size: 22pt; font-weight: 700;
+      margin: 0 0 14pt; padding-bottom: 8pt; border-bottom: 2px solid #000;
+    }
+    li {
+      grid-template-columns: 2.2em 1fr auto; border: none; border-bottom: 1px solid #ccc;
+      border-radius: 0; padding: 4pt 0; margin: 0; break-inside: avoid;
+    }
+    .instr { color: #000; font-size: 12pt; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>SetList</h1>
+      <div class="meta"><span id="count">0</span> pièces · <span id="filename">aucun fichier</span></div>
+    </div>
+    <div class="toolbar">
+      <button id="openBtn">Ouvrir…</button>
+      <button id="saveBtn" class="primary">Sauvegarder</button>
+      <button id="saveAsBtn">Sauvegarder sous…</button>
+      <button id="printBtn">Imprimer</button>
+    </div>
+  </header>
+
+  <input id="eventTitle" class="event" placeholder="Titre de la soirée (ex. Soirée Dansante 31 Octobre)">
+  <div class="print-title" id="printTitle"></div>
+
+  <form class="add" id="addForm">
+    <input id="newPiece" placeholder="Nouvelle pièce (ex. Hotel California)" required>
+    <input id="newInstr" placeholder="Instrument">
+    <button class="primary" type="submit">Ajouter</button>
+  </form>
+
+  <ol id="list"></ol>
+  <p class="hint">Glissez une pièce par la poignée ⋮⋮ pour changer l'ordre. Double-cliquez sur un titre ou un instrument pour le modifier.</p>
+  <input type="file" id="fileInput" accept=".json,application/json" hidden>
+</main>
+
+<script>
+let pieces = [];
+let fileHandle = null;      // File System Access API (Chrome/Edge)
+let fileName = 'setlist.json';
+let dirty = false;
+let titre = '';
+
+const $ = (id) => document.getElementById(id);
+const listEl = $('list');
+
+function setDirty(v) {
+  dirty = v;
+  $('saveBtn').classList.toggle('dirty', v);
+}
+
+function render() {
+  listEl.innerHTML = '';
+  $('count').textContent = pieces.length;
+  if (!pieces.length) {
+    listEl.innerHTML = '<li class="empty" style="display:block">Aucune pièce. Ouvrez un fichier JSON ou ajoutez-en une.</li>';
+    return;
+  }
+  pieces.forEach((p, i) => {
+    const li = document.createElement('li');
+    li.dataset.index = i;
+    li.innerHTML = `
+      <span class="handle" title="Glisser">⋮⋮</span>
+      <span class="num">${i + 1}.</span>
+      <span class="title"></span>
+      <span class="instr"></span>
+      <button class="del" title="Supprimer">✕</button>`;
+    li.querySelector('.title').textContent = p.piece;
+    li.querySelector('.instr').textContent = p.instrument || '—';
+    attachDrag(li);
+    attachEdit(li.querySelector('.title'), i, 'piece');
+    attachEdit(li.querySelector('.instr'), i, 'instrument');
+    li.querySelector('.del').onclick = () => {
+      if (confirm(`Supprimer « ${p.piece} » ?`)) {
+        pieces.splice(i, 1); setDirty(true); render();
+      }
+    };
+    listEl.appendChild(li);
+  });
+}
+
+/* ---------- Glisser-déposer ---------- */
+let dragIndex = null;
+
+function attachDrag(li) {
+  const handle = li.querySelector('.handle');
+  handle.addEventListener('mousedown', () => li.draggable = true);
+  handle.addEventListener('touchstart', () => li.draggable = true, { passive: true });
+  li.addEventListener('dragstart', (e) => {
+    dragIndex = +li.dataset.index;
+    li.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', dragIndex);
+  });
+  li.addEventListener('dragend', () => {
+    li.draggable = false;
+    li.classList.remove('dragging');
+    clearMarkers();
+  });
+  li.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    clearMarkers();
+    const r = li.getBoundingClientRect();
+    li.classList.add(e.clientY < r.top + r.height / 2 ? 'over-top' : 'over-bottom');
+  });
+  li.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const r = li.getBoundingClientRect();
+    let target = +li.dataset.index + (e.clientY < r.top + r.height / 2 ? 0 : 1);
+    if (dragIndex === null) return;
+    const [moved] = pieces.splice(dragIndex, 1);
+    if (dragIndex < target) target--;
+    pieces.splice(target, 0, moved);
+    if (target !== dragIndex) setDirty(true);
+    dragIndex = null;
+    render();
+  });
+}
+function clearMarkers() {
+  listEl.querySelectorAll('.over-top,.over-bottom').forEach(el => el.classList.remove('over-top', 'over-bottom'));
+}
+
+/* ---------- Édition en place ---------- */
+function attachEdit(el, i, field) {
+  el.addEventListener('dblclick', () => {
+    el.contentEditable = 'true';
+    if (field === 'instrument' && !pieces[i].instrument) el.textContent = '';
+    el.focus();
+    document.getSelection().selectAllChildren(el);
+  });
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+    if (e.key === 'Escape') { el.textContent = pieces[i][field]; el.blur(); }
+  });
+  el.addEventListener('blur', () => {
+    if (el.contentEditable !== 'true') return;
+    el.contentEditable = 'false';
+    const v = el.textContent.trim();
+    if (field === 'piece' && !v) { render(); return; }
+    if (v !== (pieces[i][field] || '')) { pieces[i][field] = v; setDirty(true); }
+    render();
+  });
+}
+
+/* ---------- Ajout ---------- */
+$('addForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const piece = $('newPiece').value.trim();
+  if (!piece) return;
+  pieces.push({ piece, instrument: $('newInstr').value.trim() });
+  $('newPiece').value = ''; $('newInstr').value = '';
+  $('newPiece').focus();
+  setDirty(true); render();
+  listEl.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+});
+
+/* ---------- Chargement ---------- */
+// Accepte : [ ... ], { pieces: [ ... ] }, ou tout objet contenant une liste
+function findList(data, depth = 0) {
+  if (Array.isArray(data)) return data;
+  if (!data || typeof data !== 'object' || depth > 3) return null;
+  for (const k of ['pieces', 'pièces', 'setlist', 'songs', 'items', 'data']) {
+    if (Array.isArray(data[k])) return data[k];
+  }
+  for (const v of Object.values(data)) {
+    const found = findList(v, depth + 1);
+    if (found) return found;
+  }
+  return null;
+}
+
+function loadData(text, name) {
+  try {
+    let data = JSON.parse(text.replace(/^﻿/, ''));
+    // JSON « doublement encodé » (une chaîne qui contient du JSON)
+    while (typeof data === 'string') data = JSON.parse(data);
+    let arr = findList(data);
+    if (!arr) {
+      const desc = data === null ? 'null'
+        : Array.isArray(data) ? 'tableau' : typeof data === 'object'
+        ? 'objet avec les clés : ' + Object.keys(data).slice(0, 8).join(', ')
+        : typeof data;
+      throw new Error('aucune liste de pièces trouvée (contenu : ' + desc + ')');
+    }
+    pieces = arr.map(x => typeof x === 'string'
+      ? { piece: x, instrument: '' }
+      : { piece: String(x.piece ?? x['PIÈCE'] ?? x.titre ?? x.title ?? ''),
+          instrument: String(x.instrument ?? x.INSTRUMENT ?? '') })
+      .filter(x => x.piece);
+    titre = (data && !Array.isArray(data) && typeof data.titre === 'string') ? data.titre : '';
+    $('eventTitle').value = titre;
+    fileName = name;
+    $('filename').textContent = name;
+    setDirty(false); render();
+  } catch (err) {
+    alert(`Impossible de lire « ${name} » : ${err.message}`);
+  }
+}
+
+$('openBtn').onclick = async () => {
+  if (dirty && !confirm('Modifications non sauvegardées. Continuer ?')) return;
+  if (window.showOpenFilePicker) {
+    try {
+      const [h] = await showOpenFilePicker({ types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }] });
+      const f = await h.getFile();
+      fileHandle = h;
+      loadData(await f.text(), f.name);
+    } catch (e) { if (e.name !== 'AbortError') alert(e.message); }
+  } else {
+    $('fileInput').click();
+  }
+};
+$('fileInput').onchange = async (e) => {
+  const f = e.target.files[0];
+  if (f) { fileHandle = null; loadData(await f.text(), f.name); }
+  e.target.value = '';
+};
+
+/* ---------- Sauvegarde ---------- */
+const toJSON = () => JSON.stringify({ titre, pieces }, null, 2) + '\n';
+
+/* ---------- Titre et impression ---------- */
+$('eventTitle').addEventListener('input', (e) => { titre = e.target.value.trim(); setDirty(true); });
+window.addEventListener('beforeprint', () => {
+  $('printTitle').textContent = titre;
+  $('printTitle').style.display = titre ? '' : 'none';
+  const old = document.title;
+  if (titre) document.title = titre;           // nom proposé pour « Enregistrer en PDF »
+  window.addEventListener('afterprint', () => { document.title = old; }, { once: true });
+});
+$('printBtn').onclick = () => window.print();
+
+async function writeTo(handle) {
+  const w = await handle.createWritable();
+  await w.write(toJSON());
+  await w.close();
+  fileHandle = handle; fileName = handle.name;
+  $('filename').textContent = fileName;
+  setDirty(false);
+}
+
+function download() {
+  const blob = new Blob([toJSON()], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fileName;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  setDirty(false);
+}
+
+async function saveAs() {
+  if (!window.showSaveFilePicker) return download();
+  try {
+    const h = await showSaveFilePicker({ suggestedName: fileName,
+      types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }] });
+    await writeTo(h);
+  } catch (e) { if (e.name !== 'AbortError') alert(e.message); }
+}
+
+$('saveBtn').onclick = async () => {
+  if (fileHandle) {
+    try { await writeTo(fileHandle); } catch (e) { alert(e.message); }
+  } else saveAs();
+};
+$('saveAsBtn').onclick = saveAs;
+
+window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+/* Chargement automatique de setlist.json si la page est servie par un serveur web */
+fetch('setlist.json')
+  .then(r => r.ok ? r.text() : Promise.reject())
+  .then(t => loadData(t, 'setlist.json'))
+  .catch(() => render());
+</script>
+</body>
+</html>
