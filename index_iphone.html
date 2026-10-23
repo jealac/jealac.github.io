@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SetList">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#edf0f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1422" media="(prefers-color-scheme: dark)">
+<title>SetList</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  /* Layout : une colonne façon feuille de scène — en-tête collant (titre de soirée + état),
+     barre d'ajout, puis la liste numérotée qu'on réordonne au doigt par la poignée. */
+  :root {
+    --bg: #edf0f4;
+    --surface: #ffffff;
+    --ink: #142036;
+    --muted: #5b6579;
+    --line: #d5dbe5;
+    --accent: #a86a00;        /* ambre « projecteur », assez foncé pour le texte */
+    --accent-fill: #f2b632;
+    --on-accent: #1a1405;
+    --lift: rgba(20, 32, 54, .18);
+    --chip-bass-bg: #dfe8fb; --chip-bass-fg: #1f3f86;
+    --chip-sax-bg: #fbe6d2;  --chip-sax-fg: #8a3d00;
+    --chip-ae-bg: #e2f2e6;   --chip-ae-fg: #1d6334;
+    --chip-other-bg: #ebe6f5; --chip-other-fg: #4d3a7a;
+    --danger: #b3261e;
+
+    --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+    --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0d1422; --surface: #172036; --ink: #e9edf5; --muted: #98a3b8; --line: #2a3550;
+      --accent: #f2b632; --accent-fill: #f2b632; --on-accent: #1a1405; --lift: rgba(0, 0, 0, .5);
+      --chip-bass-bg: #22325a; --chip-bass-fg: #b9cdfa;
+      --chip-sax-bg: #4a2d14;  --chip-sax-fg: #ffc996;
+      --chip-ae-bg: #183b26;   --chip-ae-fg: #a6e2b8;
+      --chip-other-bg: #31274a; --chip-other-fg: #d4c6f5;
+      --danger: #ff8a80;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0d1422; --surface: #172036; --ink: #e9edf5; --muted: #98a3b8; --line: #2a3550;
+    --accent: #f2b632; --accent-fill: #f2b632; --on-accent: #1a1405; --lift: rgba(0, 0, 0, .5);
+    --chip-bass-bg: #22325a; --chip-bass-fg: #b9cdfa;
+    --chip-sax-bg: #4a2d14;  --chip-sax-fg: #ffc996;
+    --chip-ae-bg: #183b26;   --chip-ae-fg: #a6e2b8;
+    --chip-other-bg: #31274a; --chip-other-fg: #d4c6f5;
+    --danger: #ff8a80;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body {
+    margin: 0;
+    background: var(--bg); color: var(--ink);
+    font: 17px/1.4 var(--font-body);
+    -webkit-tap-highlight-color: transparent;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+    z-index: 10; background: var(--bg);
+  }
+  .wrap {
+    max-width: 680px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  /* ---------- En-tête ---------- */
+  header.top {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+    background: var(--bg); border-bottom: 1px solid var(--line);
+  }
+  header.top .wrap { padding-block: 12px 10px; display: grid; gap: 6px; }
+  .brand {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    font: 800 .78rem/1 var(--font-display); letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+  }
+  .brand b { color: var(--accent); }
+  #eventTitle {
+    font: 800 1.55rem/1.15 var(--font-display); color: var(--ink);
+    border: 0; background: transparent; padding: 2px 0; width: 100%; min-width: 0;
+    border-bottom: 2px solid transparent; border-radius: 0;
+  }
+  #eventTitle:focus { outline: none; border-bottom-color: var(--accent-fill); }
+  #eventTitle::placeholder { color: var(--muted); opacity: .7; }
+  .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; color: var(--muted); font-size: .9rem; }
+  .meta .count { font-variant-numeric: tabular-nums; }
+  .status {
+    display: inline-flex; align-items: center; gap: 6px; font-size: .8rem;
+    padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line);
+    font: 400 .78rem/1.2 var(--font-body); letter-spacing: 0; text-transform: none;
+  }
+  .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+  .status[data-state="saved"]::before { background: #2f9e57; }
+  .status[data-state="saving"]::before { background: var(--accent-fill); }
+  .status[data-state="local"]::before { background: var(--danger); }
+
+  /* ---------- Actions ---------- */
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; padding-block: 14px 4px; }
+  button, .btn {
+    font: 700 .92rem/1 var(--font-body); color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 11px 14px; min-height: 44px; cursor: pointer;
+  }
+  button:hover { border-color: var(--muted); }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--accent-fill); outline-offset: 2px; }
+  button.primary { background: var(--accent-fill); color: var(--on-accent); border-color: var(--accent-fill); }
+  button.ghost { background: transparent; }
+  button.danger { color: var(--danger); }
+
+  form.add { display: grid; grid-template-columns: 1fr 9.5rem auto; gap: 8px; padding-block: 10px 16px; }
+  @media (max-width: 520px) {
+    form.add { grid-template-columns: 1fr auto; }
+    form.add #newPiece { grid-column: 1 / -1; }
+  }
+  input[type="text"] {
+    font: 400 1rem var(--font-body); color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 12px; min-height: 44px; width: 100%; min-width: 0;
+  }
+
+  /* ---------- Liste ---------- */
+  ol#list { list-style: none; margin: 0; padding: 0 0 120px; display: grid; gap: 6px; }
+  li.row {
+    display: grid; grid-template-columns: 44px 2.2rem 1fr; align-items: center;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    min-height: 56px; position: relative;
+    transition: box-shadow .15s, transform .15s;
+  }
+  li.row.lifted {
+    z-index: 3; transform: scale(1.02);
+    box-shadow: 0 10px 28px var(--lift); border-color: var(--accent-fill);
+  }
+  .handle {
+    align-self: stretch; display: grid; place-items: center;
+    border: 0; background: transparent; border-radius: 12px 0 0 12px; min-height: 0; padding: 0;
+    color: var(--muted); cursor: grab; touch-action: none;
+  }
+  .handle:active { cursor: grabbing; }
+  .handle svg { width: 18px; height: 18px; fill: currentColor; }
+  .num {
+    font: 500 .85rem var(--font-mono); color: var(--muted);
+    text-align: right; padding-right: 8px; font-variant-numeric: tabular-nums;
+  }
+  .text {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 4px 10px; padding: 10px 14px 10px 0; min-width: 0; cursor: text;
+    border: 0; background: transparent; text-align: left; font: inherit; color: inherit; border-radius: 0 12px 12px 0;
+    min-height: 56px;
+  }
+  .title { font-weight: 700; overflow-wrap: anywhere; min-width: 0; }
+  .chip {
+    font: 500 .78rem/1 var(--font-mono); white-space: nowrap;
+    padding: 5px 8px; border-radius: 6px;
+    background: var(--chip-other-bg); color: var(--chip-other-fg);
+  }
+  .chip[data-f="bass"] { background: var(--chip-bass-bg); color: var(--chip-bass-fg); }
+  .chip[data-f="sax"]  { background: var(--chip-sax-bg);  color: var(--chip-sax-fg); }
+  .chip[data-f="ae"]   { background: var(--chip-ae-bg);   color: var(--chip-ae-fg); }
+  .chip[data-f="none"] { background: transparent; color: var(--muted); border: 1px dashed var(--line); }
+
+  /* Ligne en édition */
+  .editor { grid-column: 1 / -1; display: grid; gap: 8px; padding: 12px; }
+  .editor .fields { display: grid; grid-template-columns: 1fr 9.5rem; gap: 8px; }
+  @media (max-width: 520px) { .editor .fields { grid-template-columns: 1fr; } }
+  .editor .btns { display: flex; flex-wrap: wrap; gap: 8px; }
+  .editor .btns .danger { margin-left: auto; }
+
+  .empty {
+    text-align: center; color: var(--muted); padding: 48px 16px;
+    border: 1px dashed var(--line); border-radius: 12px;
+  }
+  .empty strong { display: block; color: var(--ink); font: 700 1.1rem var(--font-display); margin-bottom: 4px; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 20;
+    display: flex; align-items: center; gap: 12px;
+    background: var(--ink); color: var(--bg); border-radius: 12px; padding: 8px 8px 8px 16px;
+    max-width: calc(100% - 32px); box-shadow: 0 8px 24px var(--lift); font-size: .95rem;
+  }
+  .toast button { background: transparent; color: var(--accent-fill); border-color: transparent; }
+
+  /* ---------- Impression ---------- */
+  .print-title { display: none; }
+  @media print {
+    @page { margin: 1.5cm; }
+    html { padding: 0; }
+    body { background: #fff; color: #000; font-size: 14pt; }
+    body::before, header.top, .actions, form.add, .handle, .toast { display: none !important; }
+    .wrap { max-width: none; padding: 0; }
+    .print-title:not([hidden]) {
+      display: block; text-align: center; font: 800 22pt var(--font-display); color: #000;
+      margin: 0 0 14pt; padding-bottom: 8pt; border-bottom: 2px solid #000;
+    }
+    ol#list { display: block; padding: 0; }
+    li.row {
+      display: grid; grid-template-columns: 2.4em 1fr; min-height: 0; transform: none;
+      background: #fff; border: 0; border-bottom: 1px solid #bbb; border-radius: 0;
+      box-shadow: none; break-inside: avoid;
+    }
+    .num { color: #444; font-size: 12pt; }
+    .text { min-height: 0; padding: 4pt 0; }
+    .chip { background: none !important; color: #000 !important; border: 0 !important; padding: 0; font-size: 12pt; }
+  }
+
+  @media (prefers-reduced-motion: reduce) { li.row { transition: none; } li.row.lifted { transform: none; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span><b>Set</b>List</span><span class="status" id="status" data-state="loading">Chargement…</span></div>
+    <input id="eventTitle" type="text" placeholder="Titre de la soirée" aria-label="Titre de la soirée" autocomplete="off">
+    <div class="meta"><span class="count" id="count">—</span><span id="hint">Glisse la poignée pour réordonner · touche une pièce pour la modifier</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="actions">
+    <button id="importBtn" type="button">Importer JSON</button>
+    <button id="exportBtn" type="button">Exporter JSON</button>
+    <button id="printBtn" type="button">Imprimer</button>
+    <button id="resetBtn" type="button" class="ghost">Recharger setlist.json</button>
+    <input id="fileInput" type="file" accept=".json,application/json" hidden>
+  </div>
+
+  <form class="add" id="addForm" autocomplete="off">
+    <input id="newPiece" type="text" placeholder="Nouvelle pièce" aria-label="Nouvelle pièce" required>
+    <input id="newInstr" type="text" placeholder="Instrument" aria-label="Instrument">
+    <button class="primary" type="submit">Ajouter</button>
+  </form>
+
+  <div class="print-title" id="printTitle" hidden></div>
+  <ol id="list" aria-label="Pièces"></ol>
+</main>
+
+<div class="toast" id="toast" hidden><span id="toastMsg"></span><button id="toastUndo" type="button">Annuler</button></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const listEl = $('list');
+const HANDLE_SVG = '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="7" cy="4" r="1.6"/><circle cx="13" cy="4" r="1.6"/><circle cx="7" cy="10" r="1.6"/><circle cx="13" cy="10" r="1.6"/><circle cx="7" cy="16" r="1.6"/><circle cx="13" cy="16" r="1.6"/></svg>';
+
+const state = { titre: '', pieces: [], loaded: false };
+let editingIndex = -1;
+let dragging = null;
+
+/* ---------- Stockage : mémoire du navigateur de cet appareil ---------- */
+const LS_KEY = 'setlist.v1';
+const snapshotStr = () => JSON.stringify({ titre: state.titre, pieces: state.pieces });
+let savedOnce = false;
+
+function setStatus(s) {
+  const el = $('status');
+  el.dataset.state = s;
+  el.textContent = { loading: 'Chargement…', saved: 'Enregistré sur cet appareil',
+    unsaved: 'Modifié · pense à exporter', local: 'Non enregistré (navigation privée ?)' }[s] || s;
+}
+function lsWrite() {
+  try { localStorage.setItem(LS_KEY, snapshotStr()); return true; } catch (e) { return false; }
+}
+function lsRead() { try { return localStorage.getItem(LS_KEY); } catch (e) { return null; } }
+
+function changed() {
+  setStatus(lsWrite() ? 'saved' : 'local');
+}
+
+function apply(data) {
+  const parsed = normalize(data);
+  if (!parsed) return false;
+  state.titre = parsed.titre; state.pieces = parsed.pieces; state.loaded = true;
+  if (document.activeElement !== $('eventTitle')) $('eventTitle').value = state.titre;
+  render();
+  return true;
+}
+
+/* ---------- Lecture tolérante (mêmes règles que la version ordinateur) ---------- */
+function findList(d, depth = 0) {
+  if (Array.isArray(d)) return d;
+  if (!d || typeof d !== 'object' || depth > 3) return null;
+  for (const k of ['pieces', 'pièces', 'setlist', 'songs', 'items', 'data']) if (Array.isArray(d[k])) return d[k];
+  for (const v of Object.values(d)) { const f = findList(v, depth + 1); if (f) return f; }
+  return null;
+}
+function normalize(data) {
+  while (typeof data === 'string') data = JSON.parse(data.replace(/^﻿/, ''));
+  const arr = findList(data);
+  if (!arr) return null;
+  const pieces = arr.map(x => typeof x === 'string' ? { piece: x, instrument: '' } : {
+      piece: String(x.piece ?? x['PIÈCE'] ?? x.titre ?? x.title ?? '').trim(),
+      instrument: String(x.instrument ?? x.INSTRUMENT ?? '').trim() })
+    .filter(x => x.piece);
+  const titre = data && !Array.isArray(data) && typeof data.titre === 'string' ? data.titre : '';
+  return { titre, pieces };
+}
+
+/* ---------- Rendu ---------- */
+function family(instr) {
+  const s = (instr || '').toLowerCase();
+  if (!s) return 'none';
+  if (s.startsWith('sax')) return 'sax';
+  if (s.startsWith('ae')) return 'ae';
+  if (s.startsWith('bass')) return 'bass';
+  return 'other';
+}
+
+function render() {
+  const n = state.pieces.length;
+  $('count').textContent = state.loaded ? `${n} pièce${n > 1 ? 's' : ''}` : '—';
+  listEl.innerHTML = '';
+  if (!state.loaded) {
+    listEl.innerHTML = '<li class="empty"><strong>Chargement de ta liste…</strong>Tes pièces apparaîtront ici.</li>';
+    return;
+  }
+  if (!n) {
+    listEl.innerHTML = '<li class="empty"><strong>Aucune pièce pour l’instant</strong>Ajoute une pièce ci-dessus ou importe ton fichier setlist.json.</li>';
+    return;
+  }
+  state.pieces.forEach((p, i) => listEl.appendChild(i === editingIndex ? editorRow(p, i) : row(p, i)));
+}
+
+function row(p, i) {
+  const li = document.createElement('li');
+  li.className = 'row'; li.dataset.index = i;
+  li.innerHTML = `<button class="handle" type="button" aria-label="Déplacer">${HANDLE_SVG}</button>
+    <span class="num">${i + 1}</span>
+    <button class="text" type="button"><span class="title"></span><span class="chip"></span></button>`;
+  li.querySelector('.title').textContent = p.piece;
+  const chip = li.querySelector('.chip');
+  chip.textContent = p.instrument || 'instrument ?';
+  chip.dataset.f = family(p.instrument);
+  li.querySelector('.text').addEventListener('click', () => { editingIndex = i; render(); focusEditor(); });
+  attachDrag(li, li.querySelector('.handle'));
+  return li;
+}
+
+function editorRow(p, i) {
+  const li = document.createElement('li');
+  li.className = 'row'; li.dataset.index = i;
+  li.innerHTML = `<form class="editor" autocomplete="off">
+      <div class="fields">
+        <input type="text" id="editPiece" aria-label="Titre de la pièce" required>
+        <input type="text" id="editInstr" aria-label="Instrument" placeholder="Instrument">
+      </div>
+      <div class="btns">
+        <button class="primary" type="submit">OK</button>
+        <button class="ghost" type="button" data-act="cancel">Annuler</button>
+        <button class="ghost danger" type="button" data-act="delete">Supprimer</button>
+      </div>
+    </form>`;
+  const f = li.querySelector('form');
+  f.editPiece.value = p.piece; f.editInstr.value = p.instrument;
+  f.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const piece = f.editPiece.value.trim();
+    if (!piece) return;
+    state.pieces[i] = { piece, instrument: f.editInstr.value.trim() };
+    editingIndex = -1; render(); changed();
+  });
+  f.querySelector('[data-act="cancel"]').onclick = () => { editingIndex = -1; render(); };
+  f.querySelector('[data-act="delete"]').onclick = () => {
+    const before = state.pieces.slice();
+    const [gone] = state.pieces.splice(i, 1);
+    editingIndex = -1; render(); changed();
+    toast(`« ${gone.piece} » supprimée`, () => { state.pieces = before; render(); changed(); });
+  };
+  f.addEventListener('keydown', (e) => { if (e.key === 'Escape') { editingIndex = -1; render(); } });
+  return li;
+}
+function focusEditor() { const el = $('editPiece'); if (el) { el.focus(); el.select(); } }
+
+/* ---------- Glisser au doigt ou à la souris (Pointer Events) ---------- */
+function attachDrag(li, handle) {
+  handle.addEventListener('pointerdown', (e) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    e.preventDefault();
+    handle.setPointerCapture(e.pointerId);
+    dragging = { li, y: e.clientY, raf: 0, from: +li.dataset.index };
+    li.classList.add('lifted');
+    if (navigator.vibrate) try { navigator.vibrate(8); } catch (_) {}
+    dragging.raf = requestAnimationFrame(autoScroll);
+  });
+  handle.addEventListener('pointermove', (e) => {
+    if (!dragging || dragging.li !== li) return;
+    dragging.y = e.clientY;
+    placeAt(dragging.y);
+  });
+  const end = () => {
+    if (!dragging || dragging.li !== li) return;
+    cancelAnimationFrame(dragging.raf);
+    li.classList.remove('lifted');
+    const order = [...listEl.children].map(x => +x.dataset.index);
+    const moved = order.some((v, k) => v !== k);
+    dragging = null;
+    if (moved) { state.pieces = order.map(k => state.pieces[k]); changed(); }
+    render();
+  };
+  handle.addEventListener('pointerup', end);
+  handle.addEventListener('pointercancel', end);
+  handle.addEventListener('lostpointercapture', end);
+
+  // Clavier : flèches haut / bas sur la poignée
+  handle.addEventListener('keydown', (e) => {
+    const i = +li.dataset.index;
+    const j = e.key === 'ArrowUp' ? i - 1 : e.key === 'ArrowDown' ? i + 1 : -1;
+    if (j < 0 || j >= state.pieces.length || !['ArrowUp', 'ArrowDown'].includes(e.key)) return;
+    e.preventDefault();
+    const [p] = state.pieces.splice(i, 1);
+    state.pieces.splice(j, 0, p);
+    render(); changed();
+    listEl.children[j].querySelector('.handle').focus();
+  });
+}
+
+function placeAt(y) {
+  // On déplace les VOISINS autour de la ligne tenue : déplacer la ligne elle-même
+  // dans le DOM ferait perdre la capture du doigt sur iPhone.
+  const li = dragging.li;
+  let moved = false;
+  for (let next = li.nextElementSibling; next; next = li.nextElementSibling) {
+    const r = next.getBoundingClientRect();
+    if (y > r.top + r.height / 2) { listEl.insertBefore(next, li); moved = true; } else break;
+  }
+  for (let prev = li.previousElementSibling; prev; prev = li.previousElementSibling) {
+    const r = prev.getBoundingClientRect();
+    if (y < r.top + r.height / 2) { listEl.insertBefore(prev, li.nextElementSibling); moved = true; } else break;
+  }
+  if (moved) [...listEl.children].forEach((x, k) => { const n = x.querySelector('.num'); if (n) n.textContent = k + 1; });
+}
+
+function autoScroll() {
+  if (!dragging) return;
+  const edge = 90, y = dragging.y, h = window.innerHeight;
+  let dy = 0;
+  if (y < edge + 120) dy = -Math.ceil((edge + 120 - y) / 8);   // l’en-tête collant occupe le haut
+  else if (y > h - edge) dy = Math.ceil((y - (h - edge)) / 8);
+  if (dy) { window.scrollBy(0, dy); placeAt(y); }
+  dragging.raf = requestAnimationFrame(autoScroll);
+}
+
+/* ---------- Ajout, titre ---------- */
+$('addForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const piece = $('newPiece').value.trim();
+  if (!piece) return;
+  state.pieces.push({ piece, instrument: $('newInstr').value.trim() });
+  state.loaded = true;
+  $('newPiece').value = ''; $('newInstr').value = '';
+  render(); changed();
+  listEl.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  toast(`« ${piece} » ajoutée en position ${state.pieces.length}`);
+});
+let titleTimer = null;
+$('eventTitle').addEventListener('input', (e) => {
+  state.titre = e.target.value.trim();
+  clearTimeout(titleTimer);
+  titleTimer = setTimeout(changed, 400);
+});
+
+/* ---------- Toast avec annulation ---------- */
+let toastTimer = null, undoFn = null;
+function toast(msg, undo) {
+  $('toastMsg').textContent = msg;
+  undoFn = undo || null;
+  $('toastUndo').hidden = !undo;
+  $('toast').hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { $('toast').hidden = true; undoFn = null; }, 5000);
+}
+$('toastUndo').onclick = () => { if (undoFn) undoFn(); undoFn = null; $('toast').hidden = true; };
+
+/* ---------- Importer ---------- */
+$('importBtn').onclick = () => $('fileInput').click();
+$('fileInput').onchange = async (e) => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  try {
+    const parsed = normalize(await f.text());
+    if (!parsed) throw new Error('aucune liste de pièces trouvée');
+    const before = { titre: state.titre, pieces: state.pieces.slice() };
+    apply(parsed); changed();
+    toast(`${parsed.pieces.length} pièces importées de « ${f.name} »`, () => { apply(before); changed(); });
+  } catch (err) {
+    toast(`Impossible de lire « ${f.name} » : ${err.message}`);
+  }
+};
+
+/* ---------- Exporter : partage iOS (Fichiers, AirDrop, Mail…) ou téléchargement ---------- */
+function slug(s) {
+  return (s || 'setlist').normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'setlist';
+}
+async function offer(filename, text, type) {
+  const file = new File([text], filename, { type });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title: filename }); return; }
+    catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(file);
+  a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+$('exportBtn').onclick = () => offer(slug(state.titre || 'setlist') + '.json',
+  JSON.stringify({ titre: state.titre, pieces: state.pieces }, null, 2) + '\n', 'application/json');
+
+/* ---------- Imprimer (Safari : Partager → Imprimer, ou ce bouton) ---------- */
+window.addEventListener('beforeprint', () => {
+  $('printTitle').textContent = state.titre;
+  $('printTitle').hidden = !state.titre;
+});
+$('printBtn').onclick = () => {
+  $('printTitle').textContent = state.titre;
+  $('printTitle').hidden = !state.titre;
+  const old = document.title;
+  if (state.titre) document.title = state.titre;
+  window.print();
+  setTimeout(() => { document.title = old; }, 1000);
+};
+
+/* ---------- Revenir à setlist.json du site ---------- */
+let resetArmed = false, resetTimer = null;
+$('resetBtn').onclick = async () => {
+  if (!resetArmed) {
+    resetArmed = true; $('resetBtn').textContent = 'Confirmer ?';
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => { resetArmed = false; $('resetBtn').textContent = 'Recharger setlist.json'; }, 4000);
+    return;
+  }
+  resetArmed = false; $('resetBtn').textContent = 'Recharger setlist.json';
+  const before = { titre: state.titre, pieces: state.pieces.slice() };
+  const remote = await loadRemote();
+  if (!remote) { toast('setlist.json introuvable à côté de cette page.'); return; }
+  apply(remote); changed();
+  toast(`${state.pieces.length} pièces rechargées`, () => { apply(before); changed(); });
+};
+
+async function loadRemote() {
+  try {
+    const r = await fetch('setlist.json', { cache: 'no-store' });
+    if (!r.ok) return null;
+    return normalize(await r.text());
+  } catch (e) { return null; }
+}
+
+/* ---------- Démarrage ---------- */
+render();
+(async () => {
+  const local = lsRead();
+  if (local && apply(local)) { setStatus('saved'); return; }
+  const remote = await loadRemote();
+  if (remote) apply(remote); else { state.loaded = true; render(); }
+  changed();
+})();
+</script>
+</body>
+</html>
