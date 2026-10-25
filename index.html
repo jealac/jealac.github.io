@@ -346,7 +346,8 @@ $('saveAsBtn').onclick = saveAs;
 window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
 
 /* Chargement automatique de setlist.json si la page est servie par un serveur web */
-fetch('setlist.json')
+// cache: 'no-store' + paramètre unique : contourne le cache du navigateur et celui de GitHub Pages
+fetch('setlist.json?t=' + Date.now(), { cache: 'no-store' })
   .then(r => r.ok ? r.text() : Promise.reject())
   .then(t => loadData(t, 'setlist.json'))
   .catch(() => render());
