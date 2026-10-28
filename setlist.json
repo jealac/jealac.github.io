@@ -2,10 +2,6 @@
   "titre": "Garenison 31 Octobre 2026",
   "pieces": [
     {
-      "piece": "Au Bal Masqué",
-      "instrument": "Bass 2-2"
-    },
-    {
       "piece": "Beer Barrel Polka",
       "instrument": "Sax"
     },
@@ -38,23 +34,23 @@
       "instrument": "Bass"
     },
     {
-      "piece": "All Shook Up",
-      "instrument": "Sax"
-    },
-    {
       "piece": "Another Saturday Night",
       "instrument": "Bass"
+    },
+    {
+      "piece": "All Shook Up",
+      "instrument": "Sax"
     },
     {
       "piece": "Retour à la Terre",
       "instrument": "Bass"
     },
     {
-      "piece": "Love Her Madly (The Doors)",
+      "piece": "C’est la Vie",
       "instrument": "Bass"
     },
     {
-      "piece": "C’est la Vie",
+      "piece": "Love Her Madly (The Doors)",
       "instrument": "Bass"
     },
     {
@@ -86,15 +82,11 @@
       "instrument": "Bass 2-5"
     },
     {
+      "piece": "Country Rosd",
+      "instrument": ""
+    },
+    {
       "piece": "Les Étoiles Filantes",
-      "instrument": "Bass"
-    },
-    {
-      "piece": "Take Me Home Country Road (John Denver)",
-      "instrument": "Bass 3-5"
-    },
-    {
-      "piece": "Quand j’aime une fois",
       "instrument": "Bass"
     },
     {
@@ -106,20 +98,24 @@
       "instrument": "Bass"
     },
     {
+      "piece": "Old Time. RR",
+      "instrument": ""
+    },
+    {
       "piece": "Mustang Sally (Buddy Guy)",
       "instrument": "Sax"
     },
     {
-      "piece": "My Life (Billy Joel)",
-      "instrument": "Bass 2-5"
+      "piece": "Folsom Prison Blues (Johnny Cash)",
+      "instrument": "Sax"
     },
     {
       "piece": "Evil Ways",
       "instrument": "Bass 1-3"
     },
     {
-      "piece": "Folsom Prison Blues (Johnny Cash)",
-      "instrument": "Sax"
+      "piece": "My Life (Billy Joel)",
+      "instrument": "Bass 2-5"
     },
     {
       "piece": "China Grove",
@@ -142,12 +138,12 @@
       "instrument": "Bass"
     },
     {
-      "piece": "Down On The Corner",
-      "instrument": ""
-    },
-    {
       "piece": "Long Train Runnin' (The Doobie Brothers)",
       "instrument": "Bass 3-5"
+    },
+    {
+      "piece": "Down On The Corner",
+      "instrument": ""
     },
     {
       "piece": "Can’t Get Enough Of You",
@@ -178,12 +174,12 @@
       "instrument": "Bass 2-3"
     },
     {
-      "piece": "Le Blues d’la métropole (Beau dommage)",
-      "instrument": "Bass"
-    },
-    {
       "piece": "Ginette (BD)",
       "instrument": "Bass 2-5"
+    },
+    {
+      "piece": "Le Blues d’la métropole (Beau dommage)",
+      "instrument": "Bass"
     },
     {
       "piece": "You Really Got Me (The Kinks)",
@@ -203,6 +199,14 @@
     },
     {
       "piece": "Na Na Hey Hey Kiss GoodBye",
+      "instrument": "Bass"
+    },
+    {
+      "piece": "Au Bal Masqué",
+      "instrument": "Bass 2-2"
+    },
+    {
+      "piece": "Quand j’aime une fois",
       "instrument": "Bass"
     }
   ]
