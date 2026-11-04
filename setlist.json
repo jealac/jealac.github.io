@@ -1,6 +1,42 @@
 {
-  "titre": "Garenison 31 Octobre 2026",
+  "titre": "Soirée de l'AREQ",
   "pieces": [
+    {
+      "piece": "I Saw Her Standing There (Beatles)",
+      "instrument": "Bass"
+    },
+    {
+      "piece": "La Grosse Noce (Gilbert Bécaud)",
+      "instrument": "Bass"
+    },
+    {
+      "piece": "It's Now or Never (Elvis)",
+      "instrument": "Bass"
+    },
+    {
+      "piece": "Sway (Michael Buble)",
+      "instrument": "Bass"
+    },
+    {
+      "piece": "Quando Quando Quando (Michael Buble)",
+      "instrument": "Bass"
+    },
+    {
+      "piece": "Save the Last Dance for Me (Michael Buble)",
+      "instrument": "Bass"
+    },
+    {
+      "piece": "La Dame en Bleu (Michel Louvain)",
+      "instrument": "Bass"
+    },
+    {
+      "piece": "Help Me Make It Through the Night (Elvis)",
+      "instrument": "Bass"
+    },
+    {
+      "piece": "Monsieur Cannibale (Sacha Distel)",
+      "instrument": "Bass"
+    },
     {
       "piece": "Beer Barrel Polka",
       "instrument": "Sax"
@@ -14,48 +50,28 @@
       "instrument": "Sax"
     },
     {
-      "piece": "Frog Song (Charlebois)",
-      "instrument": "Bass 2-5"
-    },
-    {
-      "piece": "Y’a pas Grand Chose (Piché)",
-      "instrument": "Bass"
-    },
-    {
       "piece": "Achy Breaky Dance (Stef Carse)",
       "instrument": "Bass"
     },
     {
-      "piece": "Listen To The Music",
+      "piece": "Listen To The Music (Doobie Bro)",
       "instrument": "Bass"
     },
     {
-      "piece": "Hot Stuff",
+      "piece": "Hot Stuff (Donna Summer)",
       "instrument": "Bass"
     },
     {
-      "piece": "Another Saturday Night",
+      "piece": "Another Saturday Night (Cats Steven)",
       "instrument": "Bass"
     },
     {
-      "piece": "All Shook Up",
+      "piece": "All Shook Up (Elvis)",
       "instrument": "Sax"
     },
     {
-      "piece": "Retour à la Terre",
+      "piece": "C’est la Vie (Les Salebarbes)",
       "instrument": "Bass"
-    },
-    {
-      "piece": "C’est la Vie",
-      "instrument": "Bass"
-    },
-    {
-      "piece": "Love Her Madly (The Doors)",
-      "instrument": "Bass"
-    },
-    {
-      "piece": "Last Train To London (ELO)",
-      "instrument": "Bass 4-9"
     },
     {
       "piece": "Shame Shame Shame (Shirley&Co)",
@@ -70,7 +86,7 @@
       "instrument": "AE(6) + Bass"
     },
     {
-      "piece": "Knock On Wood",
+      "piece": "Knock On Wood (Eric Clapton)",
       "instrument": "Bass"
     },
     {
@@ -82,23 +98,19 @@
       "instrument": "Bass 2-5"
     },
     {
-      "piece": "Take Me Home Country Road",
+      "piece": "Take Me Home Country Road (John Denver)",
       "instrument": "Bass 1-3"
-    },
-    {
-      "piece": "Les Étoiles Filantes",
-      "instrument": "Bass"
     },
     {
       "piece": "Blue Bayou (Linda Ronstadt)",
       "instrument": "Bass 2-3"
     },
     {
-      "piece": "Ça Fait Rire Les Oiseaux",
+      "piece": "Ça Fait Rire Les Oiseaux (CC)",
       "instrument": "Bass 2-3"
     },
     {
-      "piece": "Old Time. RR",
+      "piece": "Old Time. RR (Bob Seger)",
       "instrument": "Sax"
     },
     {
@@ -110,7 +122,7 @@
       "instrument": "Sax"
     },
     {
-      "piece": "Evil Ways",
+      "piece": "Evil Ways (Santana)",
       "instrument": "Bass 1-3"
     },
     {
@@ -118,19 +130,11 @@
       "instrument": "Bass 2-5"
     },
     {
-      "piece": "China Grove",
-      "instrument": "Bass 1-7"
-    },
-    {
       "piece": "You May Be Right (Billy Joel)",
       "instrument": "Bass 1-5"
     },
     {
-      "piece": "Embarque ma Belle (Kain)",
-      "instrument": "Bass 1-6"
-    },
-    {
-      "piece": "Pas Besoin",
+      "piece": "Pas Besoin de Frapper (Jacques Michel)",
       "instrument": "Bass"
     },
     {
@@ -142,19 +146,15 @@
       "instrument": "Bass 3-5"
     },
     {
-      "piece": "Down On The Corner",
+      "piece": "Down On The Corner (CCR)",
       "instrument": "Bass 3-5"
-    },
-    {
-      "piece": "Can’t Get Enough Of You",
-      "instrument": "Bass 1-2"
     },
     {
       "piece": "Walkin’ on the Sun (Smash Mouth)",
       "instrument": "Bass 2-9"
     },
     {
-      "piece": "Crocodile Rock",
+      "piece": "Crocodile Rock (Elton John)",
       "instrument": "Bass 1-5"
     },
     {
@@ -166,7 +166,7 @@
       "instrument": "Bass 1-3"
     },
     {
-      "piece": "Toujours Vivant (Boulet)",
+      "piece": "Toujours Vivant (Jerry Boulet)",
       "instrument": "AE(16) F#"
     },
     {
@@ -174,11 +174,11 @@
       "instrument": "Bass 2-3"
     },
     {
-      "piece": "Ginette (BD)",
+      "piece": "Ginette (Beau Dommage)",
       "instrument": "Bass 2-5"
     },
     {
-      "piece": "Le Blues d’la métropole (Beau dommage)",
+      "piece": "Le Blues d’la métropole (Beau Dommage)",
       "instrument": "Bass"
     },
     {
@@ -186,27 +186,19 @@
       "instrument": "Sax"
     },
     {
-      "piece": "Losing My Religion (R.E.M.)",
-      "instrument": "Bass"
-    },
-    {
       "piece": "Another Brick in the Wall (Pink Floyd)",
       "instrument": "Bass(D) + AE(11)"
     },
     {
       "piece": "Hotel California (Eagles)",
-      "instrument": "Bass + GuitBass"
-    },
-    {
-      "piece": "Na Na Hey Hey Kiss GoodBye",
       "instrument": "Bass"
     },
     {
-      "piece": "Au Bal Masqué",
-      "instrument": "Bass 2-2"
+      "piece": "Fly Me to the Moon",
+      "instrument": "Sax"
     },
     {
-      "piece": "Quand j’aime une fois",
+      "piece": "Self Control (Laura Branigan)",
       "instrument": "Bass"
     }
   ]
