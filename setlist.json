@@ -3,39 +3,39 @@
   "pieces": [
     {
       "piece": "I Saw Her Standing There (Beatles)",
-      "instrument": "Bass"
+      "instrument": "Bass 2-7"
     },
     {
       "piece": "La Grosse Noce (Gilbert Bécaud)",
-      "instrument": "Bass"
+      "instrument": "Bass 0-1"
     },
     {
       "piece": "It's Now or Never (Elvis)",
-      "instrument": "Bass"
+      "instrument": "Bass 2-7"
     },
     {
       "piece": "Sway (Michael Buble)",
-      "instrument": "Bass"
+      "instrument": "Bass 1-3"
     },
     {
       "piece": "Quando Quando Quando (Michael Buble)",
-      "instrument": "Bass"
+      "instrument": "Bass 2-2"
     },
     {
       "piece": "Save the Last Dance for Me (Michael Buble)",
-      "instrument": "Bass"
+      "instrument": "Bass 1-0"
     },
     {
       "piece": "La Dame en Bleu (Michel Louvain)",
-      "instrument": "Bass"
+      "instrument": "Bass 2-3"
     },
     {
       "piece": "Help Me Make It Through the Night (Elvis)",
-      "instrument": "Bass"
+      "instrument": "Bass 2-7"
     },
     {
       "piece": "Monsieur Cannibale (Sacha Distel)",
-      "instrument": "Bass"
+      "instrument": "Bass 2-5"
     },
     {
       "piece": "Beer Barrel Polka",
@@ -51,11 +51,11 @@
     },
     {
       "piece": "Achy Breaky Dance (Stef Carse)",
-      "instrument": "Bass"
+      "instrument": "Bass 1-0"
     },
     {
       "piece": "Listen To The Music (Doobie Bro)",
-      "instrument": "Bass"
+      "instrument": "Bass 2-5"
     },
     {
       "piece": "Hot Stuff (Donna Summer)",
@@ -63,7 +63,7 @@
     },
     {
       "piece": "Another Saturday Night (Cats Steven)",
-      "instrument": "Bass"
+      "instrument": "Bass 1-1"
     },
     {
       "piece": "All Shook Up (Elvis)",
@@ -71,7 +71,7 @@
     },
     {
       "piece": "C’est la Vie (Les Salebarbes)",
-      "instrument": "Bass"
+      "instrument": "Bass 1-3"
     },
     {
       "piece": "Shame Shame Shame (Shirley&Co)",
@@ -87,7 +87,7 @@
     },
     {
       "piece": "Knock On Wood (Eric Clapton)",
-      "instrument": "Bass"
+      "instrument": "Bass 1-0"
     },
     {
       "piece": "Beds are burning (Midnight Oil)",
@@ -159,7 +159,7 @@
     },
     {
       "piece": "Another One Bites the Dust (Queen)",
-      "instrument": "Bass"
+      "instrument": "Bass 1-5"
     },
     {
       "piece": "Rivers of Babylon (Boney M)",
@@ -179,7 +179,7 @@
     },
     {
       "piece": "Le Blues d’la métropole (Beau Dommage)",
-      "instrument": "Bass"
+      "instrument": "Bass 1-3"
     },
     {
       "piece": "You Really Got Me (The Kinks)",
@@ -191,7 +191,7 @@
     },
     {
       "piece": "Hotel California (Eagles)",
-      "instrument": "Bass"
+      "instrument": "Bass 1-7"
     },
     {
       "piece": "Fly Me to the Moon",
@@ -199,7 +199,7 @@
     },
     {
       "piece": "Self Control (Laura Branigan)",
-      "instrument": "Bass"
+      "instrument": "Bass 2-9"
     }
   ]
 }
