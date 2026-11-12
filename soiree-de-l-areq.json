@@ -2,46 +2,6 @@
   "titre": "Soirée de l'AREQ",
   "pieces": [
     {
-      "piece": "I Saw Her Standing There (Beatles)",
-      "instrument": "Bass 2-7"
-    },
-    {
-      "piece": "La Grosse Noce (Gilbert Bécaud)",
-      "instrument": "Bass 0-1"
-    },
-    {
-      "piece": "It's Now or Never (Elvis)",
-      "instrument": "Bass 2-7"
-    },
-    {
-      "piece": "Sway (Michael Buble)",
-      "instrument": "Bass 1-3"
-    },
-    {
-      "piece": "Quando Quando Quando (Michael Buble)",
-      "instrument": "Bass 2-2"
-    },
-    {
-      "piece": "Save the Last Dance for Me (Michael Buble)",
-      "instrument": "Bass 1-0"
-    },
-    {
-      "piece": "La Dame en Bleu (Michel Louvain)",
-      "instrument": "Bass 2-3"
-    },
-    {
-      "piece": "Help Me Make It Through the Night (Elvis)",
-      "instrument": "Bass 2-7"
-    },
-    {
-      "piece": "Monsieur Cannibale (Sacha Distel)",
-      "instrument": "Bass 2-5"
-    },
-    {
-      "piece": "Beer Barrel Polka",
-      "instrument": "Sax"
-    },
-    {
       "piece": "You're Sixteen (Ringo Starr)",
       "instrument": "Sax"
     },
@@ -60,6 +20,10 @@
     {
       "piece": "Hot Stuff (Donna Summer)",
       "instrument": "Bass"
+    },
+    {
+      "piece": "Save the Last Dance for Me (Michael Buble)",
+      "instrument": "Bass 1-0"
     },
     {
       "piece": "Another Saturday Night (Cats Steven)",
@@ -86,24 +50,56 @@
       "instrument": "AE(6) + Bass"
     },
     {
+      "piece": "Blue Bayou (Linda Ronstadt)",
+      "instrument": "Bass 2-3"
+    },
+    {
       "piece": "Knock On Wood (Eric Clapton)",
       "instrument": "Bass 1-0"
     },
     {
-      "piece": "Beds are burning (Midnight Oil)",
-      "instrument": "Sax"
+      "piece": "It's Now or Never (Elvis)",
+      "instrument": "Bass 2-7"
     },
     {
       "piece": "Some Kind of Wonderful (Grand Funk Railroad)",
       "instrument": "Bass 2-5"
     },
     {
+      "piece": "I Saw Her Standing There (Beatles)",
+      "instrument": "Bass 2-7"
+    },
+    {
+      "piece": "La Grosse Noce (Gilbert Bécaud)",
+      "instrument": "Bass 0-1"
+    },
+    {
+      "piece": "Monsieur Cannibale (Sacha Distel)",
+      "instrument": "Bass 2-5"
+    },
+    {
+      "piece": "La Dame en Bleu (Michel Louvain)",
+      "instrument": "Bass 2-3"
+    },
+    {
+      "piece": "Sway (Michael Buble)",
+      "instrument": "Bass 1-3"
+    },
+    {
+      "piece": "Self Control (Laura Branigan)",
+      "instrument": "Bass 2-9"
+    },
+    {
+      "piece": "Beds are burning (Midnight Oil)",
+      "instrument": "Sax"
+    },
+    {
       "piece": "Take Me Home Country Road (John Denver)",
       "instrument": "Bass 1-3"
     },
     {
-      "piece": "Blue Bayou (Linda Ronstadt)",
-      "instrument": "Bass 2-3"
+      "piece": "Help Me Make It Through the Night (Elvis)",
+      "instrument": "Bass 2-7"
     },
     {
       "piece": "Ça Fait Rire Les Oiseaux (CC)",
@@ -122,12 +118,12 @@
       "instrument": "Sax"
     },
     {
-      "piece": "Evil Ways (Santana)",
-      "instrument": "Bass 1-3"
+      "piece": "Beer Barrel Polka",
+      "instrument": "Sax"
     },
     {
-      "piece": "My Life (Billy Joel)",
-      "instrument": "Bass 2-5"
+      "piece": "Evil Ways (Santana)",
+      "instrument": "Bass 1-3"
     },
     {
       "piece": "You May Be Right (Billy Joel)",
@@ -158,6 +154,10 @@
       "instrument": "Bass 1-5"
     },
     {
+      "piece": "Quando Quando Quando (Michael Buble)",
+      "instrument": "Bass 2-2"
+    },
+    {
       "piece": "Another One Bites the Dust (Queen)",
       "instrument": "Bass 1-5"
     },
@@ -170,8 +170,8 @@
       "instrument": "AE(16) F#"
     },
     {
-      "piece": "Jonquière (Plume)",
-      "instrument": "Bass 2-3"
+      "piece": "Fly Me to the Moon",
+      "instrument": "Sax"
     },
     {
       "piece": "Ginette (Beau Dommage)",
@@ -194,12 +194,12 @@
       "instrument": "Bass 1-7"
     },
     {
-      "piece": "Fly Me to the Moon",
-      "instrument": "Sax"
+      "piece": "My Life (Billy Joel)",
+      "instrument": "Bass 2-5"
     },
     {
-      "piece": "Self Control (Laura Branigan)",
-      "instrument": "Bass 2-9"
+      "piece": "Jonquière (Plume)",
+      "instrument": "Bass 2-3"
     }
   ]
 }
